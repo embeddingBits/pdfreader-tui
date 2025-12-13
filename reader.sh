@@ -19,28 +19,9 @@ TOTAL=${#PAGES[@]}
 while true; do
     clear
 
-    TERM_W=$(tput cols)
-    TERM_H=$(tput lines)
+    chafa --size="$(tput cols)x$(($(tput lines) - 1))" "${PAGES[$PAGE]}"
 
-    # Leave space for footer
-    TERM_H=$((TERM_H - 2))
-
-    # Render size (adjust if needed)
-    IMG_W=$((TERM_W * 70 / 100))
-    IMG_H=$((TERM_H * 80 / 100))
-
-    # Center offsets
-    OFFSET_X=$(( (TERM_W - IMG_W) / 2 ))
-    OFFSET_Y=$(( (TERM_H - IMG_H) / 2 ))
-
-    # Move cursor to center
-    tput cup "$OFFSET_Y" "$OFFSET_X"
-
-    chafa --size="${IMG_W}x${IMG_H}" "${PAGES[$PAGE]}"
-
-    # Footer (centered)
-    tput cup "$((TERM_H + 1))" "$(( (TERM_W - 35) / 2 ))"
-    printf "Page %d/%d — j/k next/prev, q quit" "$((PAGE + 1))" "$TOTAL"
+    printf "\nPage %d/%d — j/k next/prev, q quit\n" "$((PAGE + 1))" "$TOTAL"
 
     read -rsn1 key </dev/tty
     [[ "$key" == $'\e' ]] && read -rsn2 key </dev/tty
